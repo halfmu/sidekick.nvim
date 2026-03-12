@@ -169,7 +169,7 @@ function M:send(text)
   local function send()
     local buffer = "sidekick-" .. self.tmux_pane_id
     Util.exec({ "tmux", "load-buffer", "-b", buffer, "-" }, { stdin = text })
-    Util.exec({ "tmux", "paste-buffer", "-b", buffer, "-d", "-r", "-t", self.tmux_pane_id })
+    Util.exec({ "tmux", "paste-buffer", "-p", "-b", buffer, "-d", "-r", "-t", self.tmux_pane_id })
   end
 
   if self.tool.mux_focus then
