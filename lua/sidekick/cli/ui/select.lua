@@ -6,6 +6,8 @@ local Util = require("sidekick.util")
 ---@field auto? boolean Automatically select if only one tool matches the filter
 
 local M = {}
+local TOOL_COL_WIDTH = 14
+local META_COL_WIDTH = 56
 
 ---@param opts sidekick.cli.Select
 function M.select(opts)
@@ -84,7 +86,7 @@ function M.format(state, picker)
   ret[#ret + 1] = { state.tool.name }
   local len = sw(state.tool.name) + 2
   if state.session then
-    ret[#ret + 1] = { string.rep(" ", 12 - len) }
+    ret[#ret + 1] = { string.rep(" ", math.max(1, TOOL_COL_WIDTH - len)) }
 
     if state.external then
       ret[#ret + 1] = { Config.ui.icons["external_" .. status], status_hl }
@@ -99,13 +101,13 @@ function M.format(state, picker)
     local backends = {} ---@type string[]
     backends[#backends + 1] = state.session.mux_backend or state.session.backend
     if state.external then
-      backends[#backends + 1] = state.session.mux_session
+      backends[#backends + 1] = state.session.mux_session_display or state.session.mux_session
     end
     local backend = ("[%s]"):format(table.concat(backends, ":"))
 
     ret[#ret + 1] = { backend, "Special" }
-    len = 12 + sw(backend)
-    ret[#ret + 1] = { string.rep(" ", 40 - len) }
+    len = TOOL_COL_WIDTH + sw(backend)
+    ret[#ret + 1] = { string.rep(" ", math.max(1, META_COL_WIDTH - len)) }
     if picker then
       local item = setmetatable({}, state) --[[@as snacks.picker.Item]]
       item.file = state.session.cwd

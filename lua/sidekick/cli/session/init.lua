@@ -17,6 +17,7 @@ M._attached = {} ---@type table<string,sidekick.cli.Session>
 ---@field external? boolean external sessions won't be opened in a terminal
 ---@field parent? sidekick.cli.Session
 ---@field mux_session? string
+---@field mux_session_display? string
 ---@field mux_backend? string
 
 ---@alias sidekick.cli.session.Opts sidekick.cli.session.State|{cwd?:string,id?:string}
@@ -121,7 +122,11 @@ function M.setup()
   end
   M.did_setup = true
   Config.tools() -- load tools, since they may register session backends
-  local session_backends = { tmux = "sidekick.cli.session.tmux", zellij = "sidekick.cli.session.zellij" }
+  local session_backends = {
+    tmux = "sidekick.cli.session.tmux",
+    zellij = "sidekick.cli.session.zellij",
+    ["agent-deck"] = "sidekick.cli.session.agent_deck",
+  }
   for name, mod in pairs(session_backends) do
     if vim.fn.executable(name) == 1 then
       M.register(name, require(mod))
